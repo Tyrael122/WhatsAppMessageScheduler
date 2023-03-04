@@ -22,7 +22,7 @@ public class MessageScheduler {
             public void run() {
                 System.out.println("Task is running");
 
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
                 // Always setup the driver and open WhatsApp before using it.
                 seleniumWhatsApp.setupDriver();

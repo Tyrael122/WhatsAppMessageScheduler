@@ -1,7 +1,9 @@
 package org.example;
 
+import org.example.commands.QuitCommand;
 import org.example.commands.ReplyCommand;
 import org.example.commands.SendMessageCommand;
+import org.example.services.SeleniumWhatsApp;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -30,6 +32,15 @@ public class Bot extends TelegramLongPollingBot {
 
         if (message.equals("/send")) {
             SendMessageCommand.subscribe(userId, update.getUpdateId(), this);
+        } else if (message.equals("/quit")) {
+            QuitCommand.quit();
+        } else if (message.equals("/help")) {
+            sendText(userId, """
+                    Available commands:
+                    /send - send a message to a contact
+                    /quit - quit the bot""");
+        } else {
+            sendText(userId, "Unknown command. Type /help to see available commands");
         }
     }
 

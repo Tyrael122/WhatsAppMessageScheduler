@@ -34,6 +34,8 @@ public class MessageScheduler {
                 } catch (RuntimeException e) {
                     bot.sendText(bot.getUserId(), "Message '" + message + "' has not been sent to "
                                                             + contactName + " at " + LocalDateTime.now().format(dtf));
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                 }
 
                 System.out.println("Task has been completed");

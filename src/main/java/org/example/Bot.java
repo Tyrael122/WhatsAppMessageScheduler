@@ -30,17 +30,20 @@ public class Bot extends TelegramLongPollingBot {
             System.out.println("Command subscriber has been successfully updated");
         }
 
-        if (message.equals("/send")) {
-            SendMessageCommand.subscribe(userId, update.getUpdateId(), this);
-        } else if (message.equals("/quit")) {
-            QuitCommand.quit();
-        } else if (message.equals("/help")) {
-            sendText(userId, """
+        if (message.startsWith("/")) {
+            handleCommand(message, update);
+        }
+    }
+
+    private void handleCommand(String message, Update update) {
+        switch (message) {
+            case "/send" -> SendMessageCommand.subscribe(userId, update.getUpdateId(), this);
+            case "/quit" -> QuitCommand.quit();
+            case "/help", "/start" -> sendText(userId, """
                     Available commands:
                     /send - send a message to a contact
                     /quit - quit the bot""");
-        } else {
-            sendText(userId, "Unknown command. Type /help to see available commands");
+            default -> sendText(userId, "Unknown command. Type /help to see available commands");
         }
     }
 

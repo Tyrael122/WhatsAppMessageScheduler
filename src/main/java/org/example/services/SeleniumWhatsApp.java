@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -16,6 +17,7 @@ public class SeleniumWhatsApp {
 
     public void setupDriver() {
         if (driver == null) {
+//            System.setProperty("webdriver.http.factory", "jdk-http-client"); // Bug fix for Chrome 111 update.
             WebDriverManager.chromedriver().setup(); // Automatically setups the driver for Chrome.
             System.out.println("Creating new chrome driver.");
             driver = new ChromeDriver();
@@ -26,8 +28,8 @@ public class SeleniumWhatsApp {
 
     public void openWhatsApp() {
         if (!Objects.equals(driver.getCurrentUrl(), "https://web.whatsapp.com/")) {
-            driver.get("https://web.whatsapp.com/");
             System.out.println("Opening WhatsApp.");
+            driver.get("https://web.whatsapp.com/");
         } else {
             System.out.println("WhatsApp is already open.");
         }
@@ -62,7 +64,17 @@ public class SeleniumWhatsApp {
     }
 
     private boolean searchContact(String contactName) {
-        WebElement searchBar = driver.findElement(By.xpath("//*[@id=\"side\"]/div[1]/div/div/div[2]/div/div[2]"));
+        WebElement searchBar;
+        try {
+            searchBar = driver.findElement(By.xpath("//*[@id=\"side\"]/div[1]/div/div/div[2]/div/div[1]"));
+        } catch (NoSuchElementException e) {
+            try {
+                searchBar = driver.findElement(By.xpath("//*[@id=\"side\"]/div[1]/div/div/div[2]/div/div[1]/p"));
+            } catch (NoSuchElementException ex) {
+                System.out.println("The search bar hasn't been found.");
+                throw new NoSuchElementException("The search bar hasn't been found.");
+            }
+        }
         searchBar.clear();
         searchBar.sendKeys(contactName + Keys.ENTER);
 
